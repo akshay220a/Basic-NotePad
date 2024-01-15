@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Notepad</h1>
+    <div class="container">
+        <div class="row">
+            <input id="text" type="text" class="text">
+            <button onclick="insert_note()">SUBMIT</button><br><br>
+            <button onclick="deleteAll()">DELETE ALL</button>
+        </div>
+    </div>
+    <div id="view" class="view"></div>
+</body>
+<script>
+
+    editbutton=false;
+    store_tag=null;
+    let note = document.getElementById("text");
+    let content = document.getElementById("view");
+    window.onload=ready;
+
+    function ready(){
+        var pp=localStorage.getItem('content')
+        let cpp=JSON.parse(pp)
+        content.innerHTML=cpp;
+    }
+    
+    function insert_note() {
+        if(!editbutton){
+            console.log(note.value);
+            let ccc=document.createElement('div');
+            ccc.innerHTML="<p>"+note.value +"</p>&nbsp<button onclick='edit_note(this,note.value)'>EDIT</button>&nbsp<button onclick='delete_note(this)'>DELETE</button><br>";
+            content.appendChild(ccc);
+        }
+        else{
+            console.log(store_tag);
+            editbutton=false;
+            store_tag.parentNode.getElementsByTagName('p')[0].innerText=note.value;
+        }
+
+        note.value='';
+    }
+
+    function delete_note(element){
+
+        content.removeChild(element.parentNode)
+
+    }
+
+    function edit_note(element,val) 
+    {
+        editbutton=true;
+        note.value=element.parentNode.getElementsByTagName('p')[0].innerText;
+        store_tag=element;
+    }
+
+    function deleteAll(){
+        var userConfirmation = window.confirm("Do you want to Delete All notes?");
+
+        if (userConfirmation) 
+        {
+            content.innerHTML='';
+            localStorage.clear();
+        }
+
+    }
+
+    window.addEventListener('beforeunload', function () {
+        localStorage.setItem('content', JSON.stringify(content.innerHTML));
+    });
+
+</script>
+
+</html>
